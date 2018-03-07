@@ -1,6 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Android MarginLeft与MarginStart的区别]]></title>
+    <url>%2FMyBlog%2F2018%2F01%2F01%2FAndroid%20MarginLeft%E4%B8%8EMarginStart%E7%9A%84%E5%8C%BA%E5%88%AB%2F</url>
+    <content type="text"><![CDATA[概述在写layout布局的时候，我们会发现有这样几个比较相似的属性： MarginStart VS MarginLeft MarginEnd VS MarginRight 这些属性的区别是什么? 根据api注释，我们得知MarginStart指的是控件距离开头View部分的间距大小，MarginLeft则指的是控件距离左边View部分的间距大小，MarginEnd和MarginRight同理。 一般情况下，View开始部分就是左边，但是有的语言目前为止还是按照从右往左的顺序来书写的，例如阿拉伯语，在Android 4.2系统之后，Google在Android中引入了RTL布局，更好了支持了由右到左文字布局的显示，为了更好的兼容RTL布局，google推荐使用MarginStart和MarginEnd来替代MarginLeft和MarginRight，这样应用可以在正常的屏幕和由右到左显示文字的屏幕上都保持一致的用户体验。 以下内容摘自他人翻译的中文Android 4.2API: Android 4.2引入了由右到左文字的全面本地支持布局。在本地RTL支持下，您可以为所有用户带来完美的应用体验，不论他们的文字书写方向是由左至右还是由右至左。 当用户切换系统语言到由右至左书写方式时，系统提供自动的应用UI布局和所有可视组件的镜像，包括文字元素的显示和输入。 您的应用仅需极少改变即可支持RTL布局镜像。如果您的应用支持这一特性，只要在您应用的manifest文件中将所有的”left/right”布局属性改变为对应的”start/end”即可。系统就会根据需要处理您UI了。]]></content>
+      <categories>
+        <category>android</category>
+      </categories>
+      <tags>
+        <tag>android</tag>
+        <tag>概念</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Android Studio解决Java程序输出中文乱码]]></title>
+    <url>%2FMyBlog%2F2018%2F01%2F01%2FAndroid%20Studio%E8%A7%A3%E5%86%B3Java%E7%A8%8B%E5%BA%8F%E8%BE%93%E5%87%BA%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81%2F</url>
+    <content type="text"><![CDATA[在使用android studio开发中会遇到乱码的问题 经查阅资料，发现需要手动在build.gradle中添加代码 新版 1tasks.withType(JavaCompile) &#123; options.encoding = UTF-8 &#125; 旧版，以gradle-1.12为例 1tasks.withType(Compile) &#123; options.encoding = UTF-8 &#125;]]></content>
+      <categories>
+        <category>android</category>
+      </categories>
+      <tags>
+        <tag>android</tag>
+        <tag>Android Studio</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[单例toast]]></title>
+    <url>%2FMyBlog%2F2018%2F01%2F01%2F%E5%8D%95%E4%BE%8Btoast%2F</url>
+    <content type="text"><![CDATA[简介当我们处于某个场景，例如一个按钮可以触发toast的显示，当你在多次点击按钮时，会多次触发toast的显示。而调用android原生的toast的makeText的方式所生产的toast是被加到一个队列里面，然后依次执行。这样就会出现多次点击按钮触发的toast一直会按队列出现在界面上，而且即使退出了当前界面也会一直出现在手机上,而且无法手动取消，这时的用户体验变得非常的差。这时就可以使用自定义样式的toast。 12345678910111213141516171819202122public class ToastUtils &#123; private static Toast toast = null; //Application初始化，避免内存泄漏 public static void init(Application mContext) &#123; if (toast != null) &#123; return; &#125; //不使用new Toast(mContext)，会出异常 toast = Toast.makeText(mContext, &quot;&quot;, Toast.LENGTH_SHORT); &#125; public static void showToast(String msg) &#123; if (toast == null) &#123; return; &#125; else &#123; toast.setDuration(Toast.LENGTH_LONG); toast.setText(msg); toast.show(); &#125; &#125;&#125; 然后哪用就哪调用方法就可以，很简单吧！]]></content>
+      <categories>
+        <category>android</category>
+      </categories>
+      <tags>
+        <tag>android</tag>
+        <tag>工具</tag>
+        <tag>view</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[textview常用功能]]></title>
+    <url>%2FMyBlog%2F2018%2F01%2F01%2Ftextview%E6%BB%91%E5%8A%A8%2F</url>
+    <content type="text"><![CDATA[textview介绍在andorid 开发中，textview有一些常用小技巧需要注意。 textview文字滑动这个功能实现起来很简单，只需要两步就可以完成。具体如下： 在xml布局声明textView的时候，我们设置它的scrollbars属性为vertical； 12345678&lt;TextView android:id=&quot;@+id/textView1&quot; android:layout_width=&quot;match_parent&quot; android:layout_height=&quot;200dp&quot; android:layout_weight=&quot;2.89&quot; android:scrollbars=&quot;vertical&quot; android:textColor=&quot;#ffffffff&quot; android:text=&quot; &quot;/&gt; 在java代码中使用textView时，调用textView的setMovementMethod方法即可。 1234567@Overrideprotected void onCreate(Bundle savedInstanceState) &#123; super.onCreate(savedInstanceState); setContentView(R.layout.location); tv = (TextView) findViewById(R.id.textView1); tv.setMovementMethod(ScrollingMovementMethod.getInstance());&#125; textview滑动到底部123456789101112131415161718192021String text = &quot;showText:\r\n&quot;; for (Student stu : sss) &#123; text += stu.toString() + &quot;\r\n&quot;; &#125; text += &quot;end.&quot;; showText.setText(text); int offset = (showText.getLineCount()) * showText.getLineHeight() + showText.getPaddingTop() + showText.getPaddingBottom(); Log.d(&quot;ObjectBoxActivity&quot;, &quot;offset:&quot; + offset + &quot;,getHeight&quot; + showText.getHeight()); if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.JELLY_BEAN) &#123; Log.d(&quot;ObjectBoxActivity&quot;, &quot;showText.getLineCount():&quot; + showText.getLineCount() + &quot;,showText.getMaxLines()&quot; + showText.getMaxLines()); if (showText.getLineCount() &gt; showText.getMaxLines()) &#123; Log.d(&quot;ObjectBoxActivity&quot;, &quot; showText.scrollTo&quot;); showText.scrollTo(0, offset - showText.getHeight()); &#125; else &#123; showText.scrollTo(0, 0); &#125; &#125;]]></content>
+      <categories>
+        <category>android</category>
+      </categories>
+      <tags>
+        <tag>android</tag>
+        <tag>view</tag>
+        <tag>textview</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[简历]]></title>
     <url>%2FMyBlog%2F2017%2F11%2F20%2F%E7%AE%80%E5%8E%86%2F</url>
     <content type="text"><![CDATA[王超男 | 1992年 | 3年工作经验Tel：151-2829-6802 | E-mail：919536816@qq.com 求职意向 工作性质：全职 期望职业：软件/互联网开发/系统集成 期望行业：IT服务(系统/数据/维护)、通信/电信运营、增值服务、互联网/电子商务 工作地区：北京、保定 期望月薪：面议 目前状况：我目前已离职 工作经历2017/02 – 2017-12 北京中天智汉科技有限责任公司|安卓开发行业类别： 互联网/电子商务|企业性质：民营|规模：20-99人|职位月薪：10001-15000元/月 工作描述：参与智能楼盘项目：该项目中负责智慧主机端（后面统称主机）的开发，包含的功能有：1、智慧教室项目基本功能2、智能log系统，存储消息日志3、支持基于tcp的智能背景音乐设备控制功能4、场景内容的定制化功能5、接入face++，智能识别人脸，将用户信息记录 2016/12 – 2017/07 北京中天智汉科技有限责任公司|安卓开发行业类别： 互联网/电子商务|企业性质：民营|规模：20-99人|职位月薪：10001-15000元/月 工作描述：参与智慧教室项目：该项目中负责智慧主机端（后面统称主机）的开发，包含的功能有：1、读写设备中的串口（读取基于zigbee通信的设备命令），完成发送和读取串口数据2、主机中设备的管理，包含添加设备，修改设备，删除设备3、主机中场景执行，包含两部分：定时任务和联动任务4、主机中设备的控制，包含基于tcp协议的控制的设备（摄像头等）和基于串口控制的设备（灯光，插座设备等）5、基于tcp的通讯方式，与服务器通信（登陆验证、消息编码和解码、消息处理、维持心跳等通信）6、基于tcp的通信方式、处理局域网中客户端的命令7、app自动升级功能，通过与安全检测app协作，达到自动获取升级版本，安装完成后，自动启动app 2014/02 – 至今 北京中天智汉科技有限责任公司|安卓开发行业类别： 计算机软件|职位月薪：10001-15000元/月 工作描述：1、安卓界面功能的开发，从最初的初版ui开发界面功能开发，到服务器配合完成页面的相关功能。（前期）2、版本维护，适配不同型号的手机版本，同时对使用时出现的bug进行修复。（前期）3、开发安卓主机盒子程序，通过底层串口完成对智能家居设备的控制功能。（前期）4、针对不同设备开发了整理了项目共享资源，同时完成了tcp通讯协议框架(近期维护)4、服务器集群部分维护和通讯服务器维护(近期) 教育经历2011/06 – 2015/07 北京交通大学海滨学院|软件工程|本科 个人技能三年软件开发设计经验；注重团队精神，善于与客户沟通，能掌握客户需求；有过软件开发过程经验；熟悉SDK编程技术，了解OOP思想；能熟练运java、多线程等技术熟练应用eclipse／Andoird studio开发工具；熟练运用sqlite数据库精通tcp／ip通讯，编写基于socket的nio 通信框架精通android 中sqlite的使用，可以熟练使用自定义数据库和greenDao开发数据库相关内容精通http／https请求，通过使用okGo框架完成相关功能的 请求熟练使用常用框架，butterknife，EventBus，greendao，Fastjson等框架 自我评价乐观开朗，活泼大方，工作认真，善于合作。]]></content>
