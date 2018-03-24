@@ -1,15 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title><![CDATA[Android Studio解决Java程序输出中文乱码]]></title>
-    <url>%2FMyBlog%2F2018%2F01%2F01%2FAndroid%20Studio%E8%A7%A3%E5%86%B3Java%E7%A8%8B%E5%BA%8F%E8%BE%93%E5%87%BA%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81%2F</url>
-    <content type="text"><![CDATA[在使用android studio开发中会遇到乱码的问题 经查阅资料，发现需要手动在build.gradle中添加代码 新版 1tasks.withType(JavaCompile) &#123; options.encoding = UTF-8 &#125; 旧版，以gradle-1.12为例 1tasks.withType(Compile) &#123; options.encoding = UTF-8 &#125;]]></content>
+    <title><![CDATA[adb idea的妙用]]></title>
+    <url>%2FMyBlog%2F2018%2F03%2F24%2Fadb_idea%E7%9A%84%E5%A6%99%E7%94%A8%2F</url>
+    <content type="text"><![CDATA[adb idea的妙用 在开发调试的时候，我们经常需要把当前项目app的数据清空，以测试用户第一次打开app时的情况。通常我们需要在设置里面通过好几步繁琐的操作才能完成。特别是在测试机器里面，因为demo太多，要找到自己的app很难。今天就来介绍一个能很快解决该问题的Android Studio插件：ADB IDEA。 ADB IDEA是一个开源项目，地址：https://github.com/pbreault/adb-idea 。里面有项目介绍以及安装方法。 安装依次打开references/Settings-&gt;Plugins-&gt;Browse Repositories，在输入框中输入adb，选择列表中的ADB Idea。点击安装。 使用可以使用Ctrl-Shift-A (or Ctrl-Alt-Shift-A on Linux and Windows),在弹出的对话框中直接输入adb找到相关的操作。 so easy~]]></content>
       <categories>
         <category>android</category>
       </categories>
       <tags>
+        <tag>android studio</tag>
+        <tag>工具</tag>
+        <tag>插件</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[android中tools的含义及用法]]></title>
+    <url>%2FMyBlog%2F2018%2F03%2F24%2Ftools%E7%9A%84%E5%A6%99%E7%94%A8%2F</url>
+    <content type="text"><![CDATA[android中tools的含义及用法安卓开发中，在写布局代码的时候，ide可以看到布局的预览效果。但是有些效果则必须在运行之后才能看见。一般我们在xml中写死，等写完代码我就把这些东西一并删了。但是你可能会忘，以至于在你的最终产品中也会有这样的代码。 开始使用tools以上的情况是可以避免的，我们使用tools命名空间以及其属性来解决这个问题。 1xmlns:tools=&quot;http://schemas.android.com/tools&quot; tools可以告诉Android Studio，哪些属性在运行的时候是被忽略的，只在设计布局的时候有效。比如我们要让android:text属性只在布局预览中有效可以这样 123456&lt;TextView android:id=&quot;@+id/text_main&quot; android:layout_width=&quot;match_parent&quot; android:layout_height=&quot;wrap_content&quot; android:layout_margin=&quot;@dimen/main_margin&quot; tools:text=&quot;I am a title&quot; /&gt; tools可以覆盖android的所有标准属性，将android:换成tools:即可。同时在运行的时候就连tools:本身都是被忽略的，不会被带进apk中。 tools属性的种类tools属性可以分为两种：一种是影响Lint提示的，一种是关于xml布局设计的。以上介绍的是tools的最基本用法：在UI设计的时候覆盖标准的android属性，属于第二种。下面介绍Lint相关的属性。 Lint相关的属性123tools:ignore tools:targetApi tools:locale tools:ignoreignore属性是告诉Lint忽略xml中的某些警告。 假设我们有这样的一个ImageView 1234567&lt;ImageView android:layout_width=&quot;wrap_content&quot; android:layout_height=&quot;wrap_content&quot; android:layout_marginStart=&quot;@dimen/margin_main&quot; android:layout_marginTop=&quot;@dimen/margin_main&quot; android:scaleType=&quot;center&quot; android:src=&quot;@drawable/divider&quot; /&gt; Lint会提示该ImageView缺少android:contentDescription属性。我们可以使用tools:ignore来忽略这个警告：12345678&lt;ImageView android:layout_width=&quot;wrap_content&quot; android:layout_height=&quot;wrap_content&quot; android:layout_marginStart=&quot;@dimen/margin_main&quot; android:layout_marginTop=&quot;@dimen/margin_main&quot; android:scaleType=&quot;center&quot; android:src=&quot;@drawable/divider&quot; tools:ignore=&quot;contentDescription&quot; /&gt; tools:targetApi假设minSdkLevel 15，而你使用了api21中的控件比如RippleDrawable 12&lt;ripple xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot; android:color=&quot;@color/accent_color&quot; /&gt; 则Lint会提示警告。 为了不显示这个警告，可以：1234&lt;ripple xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot; xmlns:tools=&quot;http://schemas.android.com/tools&quot; android:color=&quot;@color/accent_color&quot; tools:targetApi=&quot;LOLLIPOP&quot; /&gt; tools:locale（本地语言）属性默认情况下res/values/strings.xml中的字符串会执行拼写检查，如果不是英语，会提示拼写错误，通过以下代码来告诉studio本地语言不是英语，就不会有提示了。1234567&lt;resources xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot; xmlns:tools=&quot;http://schemas.android.com/tools&quot; tools:locale=&quot;it&quot;&gt; &lt;!-- Your strings go here --&gt; &lt;/resources&gt; UI预览的其他属性（非android标准属性） tools:context tools:menu tools:actionBarNavMode tools:listitem/listheader/listfooter tools:showIn tools:layout tools:contextcontext属性其实正是的称呼是activity属性，有了这个属性，ide就知道在预览布局的时候该采用什么样的主题。同时他还可以在android studio的java代码中帮助找到相关的文件（Go to Related files）该属性的值是activity的完整包名123456789&lt;LinearLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot; xmlns:tools=&quot;http://schemas.android.com/tools&quot; android:id=&quot;@+id/container&quot; android:layout_width=&quot;match_parent&quot; android:layout_height=&quot;match_parent&quot; android:orientation=&quot;vertical&quot; tools:context=&quot;com.android.example.MainActivity&quot;&gt; &lt;!-- ... --&gt; &lt;/LinearLayout&gt; tools:menu1、告诉IDE 在预览窗口中使用哪个菜单，这个菜单将显示在layout的根节点上（actionbar的位置）。 2、其实预览窗口非常智能，如果布局和一个activity关联（指上面所讲的用tools:context关联）它将会自动查询相关activity的onCreateOptionsMenu方法中的代码，以显示菜单。而menu属性则可以覆盖这种默认的行为。 3、你还可以为menu属性定义多个菜单资源，不同的菜单资源之间用逗号隔开。tools:menu=”menu_main,menu_edit”如果你不希望在预览图中显示菜单则：tools:menu=”” 4、最后需要注意，当主题为Theme.AppCompat时，这个属性不起作用。 tools:actionBarNavMode这个属性告诉ide app bar（Material中对actionbar的称呼）的显示模式，其值可以是 standard tabs list 123456&lt;LinearLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot; xmlns:tools=&quot;http://schemas.android.com/tools&quot; android:orientation=&quot;vertical&quot; android:layout_width=&quot;match_parent&quot; android:layout_height=&quot;match_parent&quot; tools:actionBarNavMode=&quot;tabs&quot; /&gt; 同样的，当主题是Theme.AppCompat (r21+, at least) 或者Theme.Material,或者使用了布局包含Toolbar的方式。 该属性也不起作用，只有holo主题才有效。 listitem, listheader 和listfooter 属性 顾名思义就是在ListView ExpandableListView等的预览效果中添加头部 尾部 以及子item的预览布局。 1234567&lt;GridView android:id=&quot;@+id/list&quot; android:layout_width=&quot;match_parent&quot; android:layout_height=&quot;wrap_content&quot; tools:listheader=&quot;@layout/list_header&quot; tools:listitem=&quot;@layout/list_item&quot; tools:listfooter=&quot;@layout/list_footer&quot; /&gt; tools:layouttools:layout告诉ide，Fragment在程序预览的时候该显示成什么样 123456789&lt;fragment xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot; xmlns:tools=&quot;http://schemas.android.com/tools&quot; android:id=&quot;@+id/item_list&quot; android:name=&quot;com.example.fragmenttwopanel.ItemListFragment&quot; android:layout_width=&quot;match_parent&quot; android:layout_height=&quot;match_parent&quot; android:layout_marginLeft=&quot;16dp&quot; android:layout_marginRight=&quot;16dp&quot; tools:layout=&quot;@android:layout/list_content&quot; /&gt; tools:showIn该属性设置于一个被其他布局的布局的根元素上。这让您可以指向包含此布局的其中一个布局，在设计时这个被包含的布局会带着周围的外部布局被渲染。这将允许您“在上下文中”查看和编辑这个布局。需要 Studio 0.5.8 或更高版本。 关于tools 就介绍完了。]]></content>
+      <categories>
+        <category>android</category>
+      </categories>
+      <tags>
+        <tag>工具</tag>
         <tag>android</tag>
-        <tag>Android Studio</tag>
+        <tag>tools</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[bitmap帮助手册]]></title>
+    <url>%2FMyBlog%2F2018%2F03%2F24%2Fbitmap%E5%B8%AE%E5%8A%A9%E6%89%8B%E5%86%8C%2F</url>
+    <content type="text"><![CDATA[bitmap帮助手册 收集整理了经常使用的关于bitmap的方法,包含按照图片的比例大小压缩、指定尺寸缩放和质量压缩。 压缩压缩可以有三种方式：1、比例压缩2、质量压缩3、比例压缩然后质量压缩 图片按比例大小压缩方法分成三种来源：1、来源为bitmap2、来源为Uri3、来源为图片地址（path） 直接压缩bitmap123456789101112131415161718192021222324252627282930313233343536373839404142434445/** * 图片按比例大小压缩方法 * * @param image （根据Bitmap图片压缩） * @return */ public static Bitmap compressScale(Bitmap image) &#123; ByteArrayOutputStream baos = new ByteArrayOutputStream(); image.compress(Bitmap.CompressFormat.JPEG, 100, baos); // 判断如果图片大于1M,进行压缩避免在生成图片（BitmapFactory.decodeStream）时溢出 if (baos.toByteArray().length / 1024 &gt; 1 * 1024) &#123; baos.reset();// 重置baos即清空baos image.compress(Bitmap.CompressFormat.JPEG, 80, baos);// 这里压缩50%，把压缩后的数据存放到baos中 &#125; ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray()); BitmapFactory.Options newOpts = new BitmapFactory.Options(); // 开始读入图片，此时把options.inJustDecodeBounds 设回true了 newOpts.inJustDecodeBounds = true; Bitmap bitmap = BitmapFactory.decodeStream(isBm, null, newOpts); newOpts.inJustDecodeBounds = false; int w = newOpts.outWidth; int h = newOpts.outHeight; // 现在主流手机比较多是800*480分辨率，所以高和宽我们设置为 // float hh = 800f;// 这里设置高度为800f // float ww = 480f;// 这里设置宽度为480f float hh = 100f; float ww = 100f; // 缩放比。由于是固定比例缩放，只用高或者宽其中一个数据进行计算即可 int be = 1;// be=1表示不缩放 if (w &gt; h &amp;&amp; w &gt; ww) &#123;// 如果宽度大的话根据宽度固定大小缩放 be = (int) (newOpts.outWidth / ww); &#125; else if (w &lt; h &amp;&amp; h &gt; hh) &#123; // 如果高度高的话根据高度固定大小缩放 be = (int) (newOpts.outHeight / hh); &#125; if (be &lt;= 0) be = 1; newOpts.inSampleSize = be; // 设置缩放比例 // newOpts.inPreferredConfig = Config.RGB_565;//降低图片从ARGB888到RGB565 // 重新读入图片，注意此时已经把options.inJustDecodeBounds 设回false了 isBm = new ByteArrayInputStream(baos.toByteArray()); bitmap = BitmapFactory.decodeStream(isBm, null, newOpts); return compressImage(bitmap);// 压缩好比例大小后再进行质量压缩 //return bitmap; &#125; 通过uri获取图片并进行压缩12345678910111213141516171819202122232425262728293031323334353637383940/** * 通过uri获取图片并进行压缩 * * @param uri */ public static Bitmap getBitmapFormUri(Activity ac, Uri uri) throws FileNotFoundException, IOException &#123; InputStream input = ac.getContentResolver().openInputStream(uri); BitmapFactory.Options onlyBoundsOptions = new BitmapFactory.Options(); onlyBoundsOptions.inJustDecodeBounds = true; onlyBoundsOptions.inDither = true;//optional onlyBoundsOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;//optional BitmapFactory.decodeStream(input, null, onlyBoundsOptions); input.close(); int originalWidth = onlyBoundsOptions.outWidth; int originalHeight = onlyBoundsOptions.outHeight; if ((originalWidth == -1) || (originalHeight == -1)) return null; //图片分辨率以480x800为标准 float hh = 100f; float ww = 100f; //缩放比。由于是固定比例缩放，只用高或者宽其中一个数据进行计算即可 int be = 1;//be=1表示不缩放 if (originalWidth &gt; originalHeight &amp;&amp; originalWidth &gt; ww) &#123;//如果宽度大的话根据宽度固定大小缩放 be = (int) (originalWidth / ww); &#125; else if (originalWidth &lt; originalHeight &amp;&amp; originalHeight &gt; hh) &#123;//如果高度高的话根据宽度固定大小缩放 be = (int) (originalHeight / hh); &#125; if (be &lt;= 0) be = 1; //比例压缩 BitmapFactory.Options bitmapOptions = new BitmapFactory.Options(); bitmapOptions.inSampleSize = be;//设置缩放比例 bitmapOptions.inDither = true;//optional bitmapOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;//optional input = ac.getContentResolver().openInputStream(uri); Bitmap bitmap = BitmapFactory.decodeStream(input, null, bitmapOptions); input.close(); return compressImage(bitmap);//再进行质量压缩 &#125; 通过path获取图片并进行压缩12345678910111213141516171819202122232425262728293031323334353637383940414243 /** * 通过path获取图片并进行压缩 * * @param path */ public static Bitmap getBitmapFormPath( String path) throws IOException &#123;// InputStream input = ac.getContentResolver().openInputStream(uri); File imgFile = new File(path); InputStream input = new FileInputStream(imgFile); BitmapFactory.Options onlyBoundsOptions = new BitmapFactory.Options(); onlyBoundsOptions.inJustDecodeBounds = true; onlyBoundsOptions.inDither = true;//optional onlyBoundsOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;//optional BitmapFactory.decodeStream(input, null, onlyBoundsOptions); input.close(); int originalWidth = onlyBoundsOptions.outWidth; int originalHeight = onlyBoundsOptions.outHeight; if ((originalWidth == -1) || (originalHeight == -1)) return null; //图片分辨率以480x800为标准 float hh = 100f; float ww = 100f; //缩放比。由于是固定比例缩放，只用高或者宽其中一个数据进行计算即可 int be = 1;//be=1表示不缩放 if (originalWidth &gt; originalHeight &amp;&amp; originalWidth &gt; ww) &#123;//如果宽度大的话根据宽度固定大小缩放 be = (int) (originalWidth / ww); &#125; else if (originalWidth &lt; originalHeight &amp;&amp; originalHeight &gt; hh) &#123;//如果高度高的话根据宽度固定大小缩放 be = (int) (originalHeight / hh); &#125; if (be &lt;= 0) be = 1; //比例压缩 BitmapFactory.Options bitmapOptions = new BitmapFactory.Options(); bitmapOptions.inSampleSize = be;//设置缩放比例 bitmapOptions.inDither = true;//optional bitmapOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;//optional input = new FileInputStream(imgFile); Bitmap bitmap = BitmapFactory.decodeStream(input, null, bitmapOptions); input.close(); return compressImage(bitmap);//再进行质量压缩 &#125; 图片的缩放123456789101112131415161718192021222324252627/*** * 图片的缩放方法 * * @param bgimage * ：源图片资源 * @param newWidth * ：缩放后宽度 * @param newHeight * ：缩放后高度 * @return */ public static Bitmap zoomImage(Bitmap bgimage, double newWidth, double newHeight) &#123; // 获取这个图片的宽和高 float width = bgimage.getWidth(); float height = bgimage.getHeight(); // 创建操作图片用的matrix对象 Matrix matrix = new Matrix(); // 计算宽高缩放率 float scaleWidth = ((float) newWidth) / width; float scaleHeight = ((float) newHeight) / height; // 缩放图片动作 matrix.postScale(scaleWidth, scaleHeight); Bitmap bitmap = Bitmap.createBitmap(bgimage, 0, 0, (int) width, (int) height, matrix, true); return bitmap; &#125; 质量压缩方法1234567891011121314151617181920/** * 质量压缩方法 * * @param image * @return */ public static Bitmap compressImage(Bitmap image) &#123; ByteArrayOutputStream baos = new ByteArrayOutputStream(); image.compress(Bitmap.CompressFormat.JPEG, 100, baos);// 质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中 int options = 90; while (baos.toByteArray().length / 1024 &gt; 1*3) &#123; // 循环判断如果压缩后图片是否大于100Kb,大于继续压缩 baos.reset(); // 重置baos即清空baos image.compress(Bitmap.CompressFormat.JPEG, options, baos);// 这里压缩options%，把压缩后的数据存放到baos中 options -= 10;// 每次都减少10 &#125; ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());// 把压缩后的数据baos存放到ByteArrayInputStream中 Bitmap bitmap = BitmapFactory.decodeStream(isBm, null, null);// 把ByteArrayInputStream数据生成图片 return zoomImage(bitmap,100,100); &#125;]]></content>
+      <categories>
+        <category>android</category>
+      </categories>
+      <tags>
+        <tag>工具</tag>
+        <tag>android</tag>
+        <tag>bitmap</tag>
       </tags>
   </entry>
   <entry>
@@ -25,19 +52,6 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[单例toast]]></title>
-    <url>%2FMyBlog%2F2018%2F01%2F01%2F%E5%8D%95%E4%BE%8Btoast%2F</url>
-    <content type="text"><![CDATA[简介当我们处于某个场景，例如一个按钮可以触发toast的显示，当你在多次点击按钮时，会多次触发toast的显示。而调用android原生的toast的makeText的方式所生产的toast是被加到一个队列里面，然后依次执行。这样就会出现多次点击按钮触发的toast一直会按队列出现在界面上，而且即使退出了当前界面也会一直出现在手机上,而且无法手动取消，这时的用户体验变得非常的差。这时就可以使用自定义样式的toast。 12345678910111213141516171819202122public class ToastUtils &#123; private static Toast toast = null; //Application初始化，避免内存泄漏 public static void init(Application mContext) &#123; if (toast != null) &#123; return; &#125; //不使用new Toast(mContext)，会出异常 toast = Toast.makeText(mContext, &quot;&quot;, Toast.LENGTH_SHORT); &#125; public static void showToast(String msg) &#123; if (toast == null) &#123; return; &#125; else &#123; toast.setDuration(Toast.LENGTH_LONG); toast.setText(msg); toast.show(); &#125; &#125;&#125; 然后哪用就哪调用方法就可以，很简单吧！]]></content>
-      <categories>
-        <category>android</category>
-      </categories>
-      <tags>
-        <tag>android</tag>
-        <tag>工具</tag>
-        <tag>view</tag>
-      </tags>
-  </entry>
-  <entry>
     <title><![CDATA[textview常用功能]]></title>
     <url>%2FMyBlog%2F2018%2F01%2F01%2Ftextview%E6%BB%91%E5%8A%A8%2F</url>
     <content type="text"><![CDATA[textview介绍在andorid 开发中，textview有一些常用小技巧需要注意。 textview文字滑动这个功能实现起来很简单，只需要两步就可以完成。具体如下： 在xml布局声明textView的时候，我们设置它的scrollbars属性为vertical； 12345678&lt;TextView android:id=&quot;@+id/textView1&quot; android:layout_width=&quot;match_parent&quot; android:layout_height=&quot;200dp&quot; android:layout_weight=&quot;2.89&quot; android:scrollbars=&quot;vertical&quot; android:textColor=&quot;#ffffffff&quot; android:text=&quot; &quot;/&gt; 在java代码中使用textView时，调用textView的setMovementMethod方法即可。 1234567@Overrideprotected void onCreate(Bundle savedInstanceState) &#123; super.onCreate(savedInstanceState); setContentView(R.layout.location); tv = (TextView) findViewById(R.id.textView1); tv.setMovementMethod(ScrollingMovementMethod.getInstance());&#125; textview滑动到底部123456789101112131415161718192021String text = &quot;showText:\r\n&quot;; for (Student stu : sss) &#123; text += stu.toString() + &quot;\r\n&quot;; &#125; text += &quot;end.&quot;; showText.setText(text); int offset = (showText.getLineCount()) * showText.getLineHeight() + showText.getPaddingTop() + showText.getPaddingBottom(); Log.d(&quot;ObjectBoxActivity&quot;, &quot;offset:&quot; + offset + &quot;,getHeight&quot; + showText.getHeight()); if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.JELLY_BEAN) &#123; Log.d(&quot;ObjectBoxActivity&quot;, &quot;showText.getLineCount():&quot; + showText.getLineCount() + &quot;,showText.getMaxLines()&quot; + showText.getMaxLines()); if (showText.getLineCount() &gt; showText.getMaxLines()) &#123; Log.d(&quot;ObjectBoxActivity&quot;, &quot; showText.scrollTo&quot;); showText.scrollTo(0, offset - showText.getHeight()); &#125; else &#123; showText.scrollTo(0, 0); &#125; &#125;]]></content>
@@ -46,8 +60,33 @@
       </categories>
       <tags>
         <tag>android</tag>
-        <tag>view</tag>
         <tag>textview</tag>
+        <tag>view</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Android Studio解决Java程序输出中文乱码]]></title>
+    <url>%2FMyBlog%2F2018%2F01%2F01%2FAndroid%20Studio%E8%A7%A3%E5%86%B3Java%E7%A8%8B%E5%BA%8F%E8%BE%93%E5%87%BA%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81%2F</url>
+    <content type="text"><![CDATA[在使用android studio开发中会遇到乱码的问题 经查阅资料，发现需要手动在build.gradle中添加代码 新版 1tasks.withType(JavaCompile) &#123; options.encoding = UTF-8 &#125; 旧版，以gradle-1.12为例 1tasks.withType(Compile) &#123; options.encoding = UTF-8 &#125;]]></content>
+      <categories>
+        <category>android</category>
+      </categories>
+      <tags>
+        <tag>android</tag>
+        <tag>Android Studio</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[单例toast]]></title>
+    <url>%2FMyBlog%2F2018%2F01%2F01%2F%E5%8D%95%E4%BE%8Btoast%2F</url>
+    <content type="text"><![CDATA[简介当我们处于某个场景，例如一个按钮可以触发toast的显示，当你在多次点击按钮时，会多次触发toast的显示。而调用android原生的toast的makeText的方式所生产的toast是被加到一个队列里面，然后依次执行。这样就会出现多次点击按钮触发的toast一直会按队列出现在界面上，而且即使退出了当前界面也会一直出现在手机上,而且无法手动取消，这时的用户体验变得非常的差。这时就可以使用自定义样式的toast。 12345678910111213141516171819202122public class ToastUtils &#123; private static Toast toast = null; //Application初始化，避免内存泄漏 public static void init(Application mContext) &#123; if (toast != null) &#123; return; &#125; //不使用new Toast(mContext)，会出异常 toast = Toast.makeText(mContext, &quot;&quot;, Toast.LENGTH_SHORT); &#125; public static void showToast(String msg) &#123; if (toast == null) &#123; return; &#125; else &#123; toast.setDuration(Toast.LENGTH_LONG); toast.setText(msg); toast.show(); &#125; &#125;&#125; 然后哪用就哪调用方法就可以，很简单吧！]]></content>
+      <categories>
+        <category>android</category>
+      </categories>
+      <tags>
+        <tag>工具</tag>
+        <tag>android</tag>
+        <tag>view</tag>
       </tags>
   </entry>
   <entry>
